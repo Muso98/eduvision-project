@@ -1,0 +1,13 @@
+﻿
+> eduvision-frontend@0.1.0 dev
+> next dev
+
+  тЦ▓ Next.js 14.2.3
+  - Local:        http://localhost:3000
+
+ тЬУ Starting...
+ тЬУ Ready in 4.1s
+ тЧЛ Compiling /dashboard ...
+ тЬУ Compiled /dashboard in 9.3s (1779 modules)
+ GET / 200 in 9866ms
+ GET /dashboard 200 in 9824ms
