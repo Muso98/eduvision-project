@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev gcc \
     libglib2.0-0 \
     libgomp1 \
+    libgl1-mesa-glx \
+    libxcb1 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY backend/requirements.txt .

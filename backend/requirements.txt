@@ -9,7 +9,7 @@ redis>=5.0.3
 celery>=5.3.6
 Pillow>=10.3.0
 python-decouple>=3.8
-opencv-python-headless==4.9.0.80
+opencv-python>=4.9.0.80
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.2.2+cpu
 torchvision==0.17.2+cpu
