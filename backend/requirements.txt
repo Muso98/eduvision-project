@@ -10,6 +10,9 @@ celery>=5.3.6
 Pillow>=10.3.0
 python-decouple>=3.8
 opencv-python==4.9.0.80
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.2.2+cpu
+torchvision==0.17.2+cpu
 ultralytics==8.2.18
 mediapipe>=0.10.30,<0.11
 roboflow>=1.1.9
