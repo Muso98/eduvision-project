@@ -415,48 +415,47 @@ class VideoAnalysisView(APIView):
         lesson = None
         from django.apps import apps
         Lesson = apps.get_model('lessons', 'Lesson')
-        Classroom = apps.get_model('classrooms', 'Classroom')
-        LessonReport = apps.get_model('reports', 'LessonReport')
-
+        
         if lesson_id:
             try:
                 lesson = Lesson.objects.get(pk=lesson_id)
             except Exception:
                 pass
-        else:
-            # Standalone analysis: create a dummy lesson to persist data
+
+        # 3. Create or Update Lesson
+        if not lesson:
             try:
-                classroom = Classroom.objects.first() # Use first available classroom
+                from apps.classrooms.models import Classroom
+                classroom = Classroom.objects.first() # Standalone fallback
                 if not classroom:
-                    logger.error("No classroom found for standalone analysis")
-                else:
-                    lesson = Lesson.objects.create(
-                        title=f"Video Upload Analysis - {timezone.now().strftime('%Y-%m-%d %H:%M')}",
-                        classroom=classroom,
-                        status=Lesson.Status.ENDED,
-                        teacher=request.user,
-                        start_time=timezone.now(),
-                        end_time=timezone.now(),
-                    )
+                    return Response({'error': "Xona topilmadi. Avval xona yarating."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                lesson = Lesson.objects.create(
+                    title=f"Video Tahlil - {timezone.now().strftime('%Y-%m-%d %H:%M')}",
+                    classroom=classroom,
+                    teacher=request.user,
+                    status=Lesson.Status.ENDED,
+                    start_time=timezone.now(),
+                    end_time=timezone.now()
+                )
             except Exception as e:
                 logger.error(f"Error creating standalone lesson: {e}")
+                return Response({'error': f"Dars yaratishda xato: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        suffix = os.path.splitext(video_file.name)[1] or '.mp4'
-        tmp    = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
-        logger.info(f"Writing {video_file.name} to {tmp.name}...")
-        for chunk in video_file.chunks():
-            tmp.write(chunk)
-        tmp.close()
-        logger.info(f"Writing complete. Size on disk: {os.path.getsize(tmp.name)} bytes")
-
+        # 4. Save video file to model and start task
         try:
-            logger.info(f"Starting analysis for user {request.user.email}")
-            result = self._analyze_video(tmp.name, lesson)
-            logger.info(f"Analysis finished. Found {result.get('max_students_in_frame', 0)} max students, {result.get('frames_analyzed', 0)} frames.")
+            lesson.video_file = video_file
+            lesson.save()
             
-            # Create LessonReport after successful analysis
-            if lesson and result.get('success'):
-                result['lesson_id'] = lesson.id
+            # Start background task
+            from .tasks import run_video_analysis
+            run_video_analysis.delay(lesson.id)
+            
+            return Response({
+                'success': True,
+                'message': "Video yuklandi va tahlil fonda boshlandi. Natijani bir necha daqiqadan so'ng Hisobotlar bo'limidan ko'rishingiz mumkin.",
+                'lesson_id': lesson.id
+            }, status=status.HTTP_202_ACCEPTED)
 
         except Exception as e:
             import traceback

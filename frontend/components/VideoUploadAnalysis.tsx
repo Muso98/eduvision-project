@@ -28,6 +28,7 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
   const [exporting, setExporting] = useState(false)
   const [result, setResult] = useState<VideoAnalysisResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const { locale } = useLanguage()
 
@@ -49,6 +50,7 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
     setUploading(true)
     setUploadPct(0)
     setError(null)
+    setSuccessMessage(null)
     try {
       const onProgress = (pct: number) => {
         setUploadPct(pct)
@@ -62,11 +64,15 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
       if (res.data?.error) {
         setError(res.data.error)
         setResult(null)
+      } else if (res.status === 202) {
+        // Background analysis started
+        setSuccessMessage(res.data.message || 'Tahlil fonda boshlandi.')
+        setResult(null)
       } else {
         setResult(res.data)
       }
     } catch (err: any) {
-      setError(err?.response?.data?.error || 'Tahlil xatosi yuz berdi. Video kadrlarida yuz aniqlanmagan bo\'lishi mumkin.')
+      setError(err?.response?.data?.error || 'Tahlil xatosi yuz berdi. Video fonda tahlil qilinayotgan bo\'lishi mumkin, natijani keyinroq tekshiring.')
       setResult(null)
     } finally {
       setUploading(false)
@@ -162,6 +168,21 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
         <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           {error}
+        </div>
+      )}
+
+      {/* Success Message */}
+      {successMessage && (
+        <div className="flex bg-emerald-50 border border-emerald-200 rounded-2xl p-6 shadow-sm">
+          <div className="flex-shrink-0 bg-emerald-100 p-2 rounded-full h-fit mr-4">
+            <CheckCircle className="w-5 h-5 text-emerald-600" />
+          </div>
+          <div>
+            <h3 className="text-emerald-900 font-semibold mb-1">Tahlil boshlandi!</h3>
+            <p className="text-emerald-700 text-sm leading-relaxed whitespace-pre-wrap">
+              {successMessage}
+            </p>
+          </div>
         </div>
       )}
 
