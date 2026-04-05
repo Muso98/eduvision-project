@@ -11,7 +11,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-eduvision-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
-CSRF_TRUSTED_ORIGINS = ['http://65.109.237.103', 'https://65.109.237.103', 'https://eduvision.com.uz', 'www.eduvision.com.uz', 'http://localhost:3000']
+CSRF_TRUSTED_ORIGINS = [
+    'http://65.109.237.103', 
+    'https://65.109.237.103', 
+    'https://eduvision.com.uz', 
+    'https://www.eduvision.com.uz', 
+    'http://localhost:3000'
+]
 
 # Secure Production Settings
 if not DEBUG:
