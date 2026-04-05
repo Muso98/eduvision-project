@@ -27,7 +27,7 @@ services:
              python manage.py collectstatic --noinput &&
              daphne -b 0.0.0.0 -p 8000 eduvision.asgi:application"
     volumes:
-      - ./backend/db.sqlite3:/app/db.sqlite3
+      - ./backend/data:/app/data
       - static_files:/app/staticfiles
       - media_files:/app/media
     depends_on:
