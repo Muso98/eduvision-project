@@ -32,6 +32,7 @@ class Lesson(models.Model):
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.SCHEDULED)
+    is_processing = models.BooleanField(default=False, null=True, blank=True, help_text="True if video analysis is currently running")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

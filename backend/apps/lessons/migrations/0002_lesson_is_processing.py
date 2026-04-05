@@ -11,6 +11,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='lesson',
             name='is_processing',
-            field=models.BooleanField(default=False, help_text='True if video analysis is currently running'),
+            field=models.BooleanField(default=False, null=True, blank=True, help_text='True if video analysis is currently running'),
         ),
     ]
