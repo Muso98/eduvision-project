@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:15-alpine
     restart: unless-stopped
-    env_file: .env.production
+    env_file: .env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     restart: unless-stopped
-    env_file: .env.production
+    env_file: .env
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
@@ -40,7 +40,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     restart: unless-stopped
-    env_file: .env.production
+    env_file: .env
     command: celery -A eduvision worker -l info --concurrency=1
     volumes:
       - media_files:/app/media
@@ -56,7 +56,7 @@ services:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
         NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL}
     restart: unless-stopped
-    env_file: .env.production
+    env_file: .env
     depends_on:
       - backend
 
