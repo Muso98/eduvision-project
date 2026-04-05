@@ -112,7 +112,7 @@ export const uz = {
 
   // About Us & Landing Page
   about_hero_badge: 'Yangi Avlod Ta\'lim Analitikasi',
-  about_hero_title: 'Zonaviy darslar uchun sun\'iy intellekt tahlillari',
+  about_hero_title: 'Zamonaviy sinfxonalar uchun intellektual AI tahlillari',
   about_hero_desc: 'EduVision talabalarning ishtiroki, xulq-atvori va e\'tiborini real vaqt rejimida tahlil qilish uchun ilg\'or kompyuter ko\'rish texnologiyasidan foydalanadi. O\'qituvchilarga yaxshiroq natijalarga erishish uchun ma\'lumotlar beradi.',
   get_started: 'Boshlash',
   open_dashboard: 'Boshqaruv Paneli',
