@@ -34,8 +34,16 @@ services:
       - static_files:/app/staticfiles
       - media_files:/app/media
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect(('localhost', 8000))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   celery_worker:
     build:
@@ -50,8 +58,10 @@ services:
     volumes:
       - media_files:/app/media
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
 
   frontend:
     build:
@@ -63,7 +73,8 @@ services:
     restart: unless-stopped
     env_file: .env
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
   nginx:
     image: nginx:1.25-alpine
@@ -78,8 +89,10 @@ services:
       - ./certbot/conf:/etc/nginx/ssl:ro
       - ./certbot/www:/var/www/certbot:ro
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
 
   certbot:
     image: certbot/certbot:latest
