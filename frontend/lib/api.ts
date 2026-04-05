@@ -69,7 +69,7 @@ export const analyzeVideo = (lessonId: number, file: File, onProgress?: (pct: nu
   form.append('video', file)
   return api.post(`/api/lessons/${lessonId}/analyze-video/`, form, {
     headers: { 'Content-Type': 'multipart/form-data' },
-    timeout: 300000, // 5 min for large videos
+    timeout: 1800000, // 30 min for large videos on CPU
     onUploadProgress: e => {
       if (onProgress && e.total) onProgress(Math.round((e.loaded / e.total) * 100))
     },
@@ -81,7 +81,7 @@ export const analyzeVideoStandalone = (file: File, onProgress?: (pct: number) =>
   form.append('video', file)
   return api.post(`/api/lessons/analyze-video/`, form, {
     headers: { 'Content-Type': 'multipart/form-data' },
-    timeout: 300000,
+    timeout: 1800000, // 30 min for large videos on CPU
     onUploadProgress: e => {
       if (onProgress && e.total) onProgress(Math.round((e.loaded / e.total) * 100))
     },
