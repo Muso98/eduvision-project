@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
+RUN mkdir -p /app/ai_module && chmod 777 /app/ai_module
 COPY backend/ .
 COPY ai_module/ ./ai_module/
 

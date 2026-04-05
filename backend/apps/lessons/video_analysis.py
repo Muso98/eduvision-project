@@ -62,16 +62,38 @@ def _get_ai_module_dir():
     candidates = []
     if override:
         candidates.append(os.path.normpath(override))
+    
+    # settings.BASE_DIR / ai_module is usually best
+    try:
+        from django.conf import settings
+        candidates.append(os.path.join(settings.BASE_DIR, 'ai_module'))
+    except Exception:
+        pass
+        
     candidates.append(os.path.normpath(os.path.join(here, '..', '..', 'ai_module')))
     candidates.append(os.path.normpath(os.path.join(here, '..', '..', '..', 'ai_module')))
+    
     chosen = None
     for c in candidates:
         if c and os.path.isdir(c):
-            chosen = c
-            break
+            # Check if any .pt files exist there
+            if any(f.endswith('.pt') for f in os.listdir(c)):
+                chosen = c
+                break
+    
     if chosen is None:
-        chosen = candidates[-1]
+        # Fallback to first existing dir
+        for c in candidates:
+            if c and os.path.isdir(c):
+                chosen = c
+                break
+                
+    if chosen is None:
+        chosen = candidates[-1] # use last candidate as fallback
         logger.warning('ai_module directory missing; tried %s', candidates)
+    else:
+        logger.info('ai_module located at: %s', chosen)
+
     if chosen not in sys.path:
         sys.path.insert(0, chosen)
     _ai_module_dir_cache = chosen
@@ -108,25 +130,33 @@ def _build_detector_pkg():
 
         if os.path.exists(model_path):
             logger.info('Using YOLOv8 model at %s', model_path)
-            return {'type': 'yolo', 'model': YOLO(model_path)}
+            model = YOLO(model_path)
+            # Ensure model is on CPU
+            model.to('cpu')
+            return {'type': 'yolo', 'model': model}
+        
         logger.info('Attempting to load generic yolov8n.pt')
-        return {'type': 'yolo', 'model': YOLO('yolov8n.pt')}
+        model = YOLO('yolov8n.pt')
+        model.to('cpu')
+        return {'type': 'yolo', 'model': model}
     except Exception as e:
-        logger.debug('YOLO load failed: %s', e)
+        logger.warning('YOLO load failed: %s. Models should be in ai_module/ directory.', e)
 
-    # 2. MediaPipe
+    # 2. MediaPipe (better than Cascade)
     try:
         import mediapipe as mp
+        logger.info('Falling back to MediaPipe face detection')
         return {
             'type': 'mediapipe',
             'model': mp.solutions.face_detection.FaceDetection(
                 model_selection=1, min_detection_confidence=0.20
             ),
         }
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning('MediaPipe load failed: %s', e)
 
     # 3. Haar cascade fallback (tuned to reduce false positives)
+    logger.info('Falling back to Haar Cascade (last resort)')
     face_cascade = cv2.CascadeClassifier(
         cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
     )
