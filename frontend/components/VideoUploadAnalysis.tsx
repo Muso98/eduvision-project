@@ -287,7 +287,7 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
           </div>
 
           {/* Timeline Chart */}
-          {result.timeline.length > 0 && (
+          {result.timeline?.length > 0 && (
             <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
               <h4 className="text-sm font-semibold text-slate-700 mb-4">Faollik dinamikasi (vaqt bo'yicha)</h4>
               <div className="h-[200px]">
@@ -317,7 +317,7 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
           )}
 
           {/* Recognized Students */}
-          {result.recognized_students.length > 0 && (
+          {result.recognized_students?.length > 0 && (
             <div className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm">
               <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-500" /> Tizim tomonidan tanilgan talabalar
