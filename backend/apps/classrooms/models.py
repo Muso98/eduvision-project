@@ -8,7 +8,7 @@ class Classroom(models.Model):
 
     name = models.CharField(max_length=200)
     location = models.CharField(max_length=300, blank=True)
-    camera_source = models.CharField(max_length=500, help_text='RTSP URL, webcam index, or stream URL')
+    camera_source = models.CharField(max_length=500, help_text='RTSP URL, webcam index, or stream URL', blank=True, null=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
     created_at = models.DateTimeField(auto_now_add=True)
 
