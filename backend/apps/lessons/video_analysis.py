@@ -602,8 +602,7 @@ class VideoAnalysisView(APIView):
                 import uuid
                 
                 saved_total = 0
-                # Use a smaller sample for face screenshots to avoid disk bloat
-                # Only save one face every 20 detections
+                logs_to_create = []
                 sc_save_counter = 0
 
                 for point in timeline:
@@ -614,7 +613,6 @@ class VideoAnalysisView(APIView):
                                 'moderate' if s_data['engagement'] >= 50 else
                                 'passive'
                             )
-                            # Assign unique ID based on spatial sort index
                             temp_id = f"video_student_{i+1}"
                             
                             log_entry = ActivityLog(
@@ -627,7 +625,6 @@ class VideoAnalysisView(APIView):
                                 activity_label=label,
                                 confidence_score=s_data.get('confidence')
                             )
-                            # Save face crop only occasionally
                             if 'face_crop' in s_data and s_data['face_crop'] is not None and s_data['face_crop'].size > 0:
                                 if sc_save_counter % 20 == 0:
                                     ret, buf = cv2.imencode('.jpg', s_data['face_crop'])
@@ -636,11 +633,26 @@ class VideoAnalysisView(APIView):
                                         log_entry.face_screenshot.save(filename, ContentFile(buf.tobytes()), save=False)
                                 sc_save_counter += 1
                             
-                            log_entry.save()
-                            saved_total += 1
-                            sc_save_counter += 1
+                            logs_to_create.append(log_entry)
                         except Exception as e:
-                            pass # Silent fail per entry
+                            logger.error(f"Error preparing log entry: {e}")
+
+                if logs_to_create:
+                    try:
+                        ActivityLog.objects.bulk_create(logs_to_create, batch_size=500)
+                        saved_total = len(logs_to_create)
+                    except Exception as e:
+                        logger.error(f"Bulk creation failed: {e}. Falling back to iterative save.")
+                        for log in logs_to_create:
+                            try:
+                                log.save()
+                                saved_total += 1
+                            except Exception:
+                                pass
+                
+                del logs_to_create
+                import gc
+                gc.collect()
 
                 logger.info(f"Background saving finished for lesson {lesson.id}. Total logs: {saved_total}")
                 
