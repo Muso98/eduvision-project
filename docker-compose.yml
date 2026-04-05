@@ -16,6 +16,12 @@ services:
     restart: unless-stopped
     # Do NOT expose port 6379 to the outside in production
 
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    env_file: .env
     environment:
       - REDIS_HOST=redis
       - REDIS_URL=redis://redis:6379/0
