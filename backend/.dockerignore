@@ -1,0 +1,14 @@
+db.sqlite3
+db.sqlite3-journal
+__pycache__/
+*.pyc
+venv/
+.env
+static/
+staticfiles/
+media/
+video_analysis.log
+migrate_err.txt
+pip_err*.txt
+run_err.txt
+*.sqlite3

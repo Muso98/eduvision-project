@@ -456,23 +456,8 @@ class VideoAnalysisView(APIView):
             
             # Create LessonReport after successful analysis
             if lesson and result.get('success'):
-                try:
-                    n_students = result.get('max_students_in_frame', 0)
-                    report, _ = LessonReport.objects.update_or_create(
-                        lesson=lesson,
-                        defaults={
-                            'avg_engagement': result.get('avg_engagement', 0),
-                            'total_students_detected': n_students,
-                            'active_count': max(0, round(result.get('active_pct', 0) * n_students / 100)),
-                            'moderate_count': max(0, round(result.get('moderate_pct', 0) * n_students / 100)),
-                            'passive_count': max(0, round(result.get('passive_pct', 0) * n_students / 100)),
-                            'summary': f"Video analysis completed for {video_file.name}. Detector: {result.get('detector_used')}. Avg engagement: {result.get('avg_engagement', 0):.1f}%."
-                        }
-                    )
-                    result['lesson_id'] = lesson.id
-                    result['report_id'] = report.id
-                except Exception as e:
-                    logger.error(f"Error creating LessonReport: {e}")
+                result['lesson_id'] = lesson.id
+
         except Exception as e:
             import traceback
             logger.error(f"FATAL ERROR during video analysis: {e}")
@@ -658,6 +643,14 @@ class VideoAnalysisView(APIView):
                             pass # Silent fail per entry
 
                 logger.info(f"Background saving finished for lesson {lesson.id}. Total logs: {saved_total}")
+                
+                # Automatically trigger report generation now that all logs are saved
+                try:
+                    from apps.reports.tasks import generate_lesson_report
+                    generate_lesson_report.delay(lesson.id)
+                    logger.info(f"Report generation task triggered for lesson {lesson.id}")
+                except Exception as e:
+                    logger.error(f"Error triggering report generation: {e}")
 
             # Fire and forget
             threading.Thread(target=save_logs_background, args=(lesson, timeline), daemon=True).start()
