@@ -59,9 +59,15 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
         ? await analyzeVideo(lessonId, file, onProgress)
         : await analyzeVideoStandalone(file, onProgress)
         
-      setResult(res.data)
+      if (res.data?.error) {
+        setError(res.data.error)
+        setResult(null)
+      } else {
+        setResult(res.data)
+      }
     } catch (err: any) {
       setError(err?.response?.data?.error || 'Tahlil xatosi yuz berdi. Video kadrlarida yuz aniqlanmagan bo\'lishi mumkin.')
+      setResult(null)
     } finally {
       setUploading(false)
       setAnalyzing(false)
@@ -89,12 +95,13 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
     }
   }
 
-  const getScoreColor = (score: number) =>
+  const getScoreColor = (score: number = 0) =>
     score >= 75 ? 'text-emerald-500' : score >= 50 ? 'text-amber-500' : 'text-red-500'
 
-  const formatDuration = (sec: number) => {
-    const m = Math.floor(sec / 60)
-    const s = Math.floor(sec % 60)
+  const formatDuration = (sec: number = 0) => {
+    const s_num = Number(sec) || 0
+    const m = Math.floor(s_num / 60)
+    const s = Math.floor(s_num % 60)
     return `${m}:${String(s).padStart(2, '0')}`
   }
 
@@ -229,7 +236,7 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
                 <BarChart2 className="w-3.5 h-3.5" /> O'rtacha faollik
               </div>
               <div className={`text-3xl font-bold ${getScoreColor(result.avg_engagement)}`}>
-                {result.avg_engagement}%
+                {result.avg_engagement || 0}%
               </div>
             </div>
             <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
@@ -242,13 +249,13 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
               <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                 <Film className="w-3.5 h-3.5" /> Tahlil qilingan
               </div>
-              <div className="text-3xl font-bold text-slate-800">{result.frames_analyzed} <span className="text-base font-normal">kadr</span></div>
+              <div className="text-3xl font-bold text-slate-800">{result.frames_analyzed || 0} <span className="text-base font-normal">kadr</span></div>
             </div>
             <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
               <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                 <Users className="w-3.5 h-3.5" /> Max talabalar
               </div>
-              <div className="text-3xl font-bold text-slate-800">{result.max_students_in_frame}</div>
+              <div className="text-3xl font-bold text-slate-800">{result.max_students_in_frame || 0}</div>
             </div>
             <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
               <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
@@ -266,9 +273,9 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
             </div>
             <div className="space-y-4">
               {[
-                { label: '✅ Diqqat bilan qaramoqda', desc: 'Ikkala ko\'z ham kadrda aniq ko\'ringan', pct: result.active_pct, color: 'bg-emerald-500' },
-                { label: '⚠️ Chalg\'igandek', desc: 'Faqat bitta ko\'z yoki yuz burilgan', pct: result.moderate_pct, color: 'bg-amber-400' },
-                { label: '🔴 Pas e\'tibor', desc: 'Ko\'zlar ko\'rinmayapti yoki yuz mutlaqo chetga burilgan', pct: result.passive_pct, color: 'bg-red-400' },
+                { label: '✅ Diqqat bilan qaramoqda', desc: 'Ikkala ko\'z ham kadrda aniq ko\'ringan', pct: Number(result.active_pct || 0), color: 'bg-emerald-500' },
+                { label: '⚠️ Chalg\'igandek', desc: 'Faqat bitta ko\'z yoki yuz burilgan', pct: Number(result.moderate_pct || 0), color: 'bg-amber-400' },
+                { label: '🔴 Pas e\'tibor', desc: 'Ko\'zlar ko\'rinmayapti yoki yuz mutlaqo chetga burilgan', pct: Number(result.passive_pct || 0), color: 'bg-red-400' },
               ].map(({ label, desc, pct, color }) => (
                 <div key={label}>
                   <div className="flex justify-between text-sm mb-1 items-end">

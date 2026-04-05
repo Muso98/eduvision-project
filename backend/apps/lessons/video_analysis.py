@@ -454,6 +454,9 @@ class VideoAnalysisView(APIView):
             except Exception:
                 pass
 
+        if 'error' in result:
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
         return Response(result)
 
     # ── Core analysis ────────────────────────────────────────────────────
