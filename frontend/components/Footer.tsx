@@ -3,7 +3,11 @@
 import Link from 'next/link'
 import { Mail, Phone, Facebook, Instagram, Linkedin, Send, Info, LayoutDashboard, Video, FileBarChart } from 'lucide-react'
 
+import { useLanguage } from '@/contexts/LanguageContext'
+
 export default function Footer() {
+  const { t } = useLanguage()
+
   return (
     <footer className="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
       <div className="container mx-auto px-4">
@@ -15,24 +19,24 @@ export default function Footer() {
               <span>EduVision</span>
             </div>
             <p className="text-sm leading-relaxed">
-              AI-powered classroom analytics platform designed to empower educators with real-time engagement data and behavioral insights.
+              {t('footer_brand_desc')}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-lg">Platform</h4>
+            <h4 className="text-white font-semibold mb-4 text-lg">{t('footer_platform')}</h4>
             <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2"><Info size={14} /><Link href="/" className="hover:text-blue-400 transition-colors">About Us</Link></li>
-              <li className="flex items-center gap-2"><LayoutDashboard size={14} /><Link href="/dashboard" className="hover:text-blue-400 transition-colors">Dashboard</Link></li>
-              <li className="flex items-center gap-2"><Video size={14} /><Link href="/dashboard/analyze" className="hover:text-blue-400 transition-colors">Video Analysis</Link></li>
-              <li className="flex items-center gap-2"><FileBarChart size={14} /><Link href="/dashboard/reports" className="hover:text-blue-400 transition-colors">Reports</Link></li>
+              <li className="flex items-center gap-2"><Info size={14} /><Link href="/" className="hover:text-blue-400 transition-colors">{t('how_it_works_btn')}</Link></li>
+              <li className="flex items-center gap-2"><LayoutDashboard size={14} /><Link href="/dashboard" className="hover:text-blue-400 transition-colors">{t('dashboard')}</Link></li>
+              <li className="flex items-center gap-2"><Video size={14} /><Link href="/dashboard/analyze" className="hover:text-blue-400 transition-colors">{t('analyze')}</Link></li>
+              <li className="flex items-center gap-2"><FileBarChart size={14} /><Link href="/dashboard/reports" className="hover:text-blue-400 transition-colors">{t('reports')}</Link></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-lg">Support</h4>
+            <h4 className="text-white font-semibold mb-4 text-lg">{t('footer_support')}</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Mail size={16} className="text-blue-500" />
@@ -55,17 +59,17 @@ export default function Footer() {
 
           {/* Copyright Section */}
           <div className="col-span-1">
-            <h4 className="text-white font-semibold mb-4 text-lg">Legal</h4>
+            <h4 className="text-white font-semibold mb-4 text-lg">{t('footer_legal')}</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-blue-400 transition-colors">Terms of Service</Link></li>
-              <li><Link href="#" className="hover:text-blue-400 transition-colors">Documentation</Link></li>
+              <li><Link href="#" className="hover:text-blue-400 transition-colors">{t('footer_privacy')}</Link></li>
+              <li><Link href="#" className="hover:text-blue-400 transition-colors">{t('footer_terms')}</Link></li>
+              <li><Link href="#" className="hover:text-blue-400 transition-colors">{t('footer_docs')}</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 pt-8 border-t border-slate-800 text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} EduVision Classroom Analytics. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} EduVision Classroom Analytics. {t('all_rights_reserved')}</p>
         </div>
       </div>
     </footer>
