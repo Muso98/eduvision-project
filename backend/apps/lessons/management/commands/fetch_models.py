@@ -21,8 +21,13 @@ class Command(BaseCommand):
         target_path = os.path.join(ai_module_dir, 'yolov8n.pt')
 
         if os.path.exists(target_path):
-            self.stdout.write(self.style.SUCCESS(f"Model already exists at {target_path}"))
-            return
+            file_size = os.path.getsize(target_path)
+            if file_size > 1000000: # At least 1MB
+                self.stdout.write(self.style.SUCCESS(f"Model already exists at {target_path} ({file_size / 1024 / 1024:.1f} MB)"))
+                return
+            else:
+                self.stdout.write(self.style.WARNING(f"Existing model at {target_path} is too small ({file_size} bytes). Re-downloading..."))
+                os.remove(target_path)
 
         self.stdout.write(f"Downloading YOLOv8n model from {model_url}...")
         try:
