@@ -16,13 +16,24 @@ export default function DashboardLayout({ children }: { readonly children: React
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
-    getMe().then(res => setUser(res.data)).catch(() => {})
-  }, [])
+    const token = Cookies.get('access_token')
+    if (!token) {
+      router.push('/')
+      return
+    }
+
+    getMe()
+      .then(res => setUser(res.data))
+      .catch(() => {
+        Cookies.remove('access_token')
+        router.push('/')
+      })
+  }, [router])
 
   const handleLogout = () => {
     Cookies.remove('access_token')
     Cookies.remove('refresh_token')
-    router.push('/login')
+    router.push('/')
   }
 
   const links = [
