@@ -1,7 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import Cookies from 'js-cookie'
 
-const WS_URL = 'ws://127.0.0.1:8000'
+const getWsUrl = () => {
+  if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return `${protocol}//${window.location.host}`;
+    }
+  }
+  return process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:8000';
+}
+
+const WS_URL = getWsUrl();
 
 export type WSMessage = {
   type?: string
