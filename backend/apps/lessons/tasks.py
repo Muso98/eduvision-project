@@ -28,3 +28,10 @@ def run_video_analysis(lesson_id):
         import logging
         logger = logging.getLogger(__name__)
         logger.error(f"FATAL ERROR in video analysis task: {e}")
+        try:
+            lesson = Lesson.objects.get(id=lesson_id)
+            lesson.is_processing = False
+            lesson.status = Lesson.Status.ENDED
+            lesson.save()
+        except:
+            pass

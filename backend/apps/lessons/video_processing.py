@@ -212,28 +212,31 @@ def process_video_file_task(video_path, lesson_id):
     sc_counter = 0
     
     while cap.isOpened() and frame_idx < total_frames:
-        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-        ret, frame = cap.read()
-        if not ret: break
-        
-        students = analyze_frame_engagement(frame, detector_pkg, recognizer, pose_pkg)
-        for i, s in enumerate(students):
-            log = ActivityLog(
-                lesson=lesson, temp_student_id=f"v_{i+1}", student=s.get('student_obj'),
-                timestamp=timezone.now(), total_engagement_score=s['engagement'],
-                behavior_label=s.get('behavior'), activity_label=s['activity']
-            )
-            if 'face_crop' in s and sc_counter % 20 == 0:
-                ret_enc, buf = cv2.imencode('.jpg', s['face_crop'])
-                if ret_enc:
-                    log.face_screenshot.save(f"bg_{uuid.uuid4().hex[:8]}.jpg", ContentFile(buf.tobytes()), save=False)
-            sc_counter += 1
-            logs_to_create.append(log)
-        
-        logger.info(f"Progress: {frame_idx}/{total_frames}")
-        gc.collect()
-        
-        frame_idx += skip_frames
+        if frame_idx % skip_frames == 0:
+            ret, frame = cap.read()
+            if not ret: break
+            
+            students = analyze_frame_engagement(frame, detector_pkg, recognizer, pose_pkg)
+            for i, s in enumerate(students):
+                log = ActivityLog(
+                    lesson=lesson, temp_student_id=f"v_{i+1}", student=s.get('student_obj'),
+                    timestamp=timezone.now(), total_engagement_score=s['engagement'],
+                    behavior_label=s.get('behavior'), activity_label=s['activity']
+                )
+                if 'face_crop' in s and sc_counter % 20 == 0:
+                    ret_enc, buf = cv2.imencode('.jpg', s['face_crop'])
+                    if ret_enc:
+                        log.face_screenshot.save(f"bg_{uuid.uuid4().hex[:8]}.jpg", ContentFile(buf.tobytes()), save=False)
+                sc_counter += 1
+                logs_to_create.append(log)
+            
+            logger.info(f"Progress: {frame_idx}/{total_frames}")
+            gc.collect()
+        else:
+            ret = cap.grab()
+            if not ret: break
+            
+        frame_idx += 1
     
     cap.release()
     if logs_to_create:
