@@ -14,6 +14,7 @@ ai_venv/
 # Environment variables
 .env
 .env.local
+.env.production
 backend/.env
 frontend/.env
 frontend/.env.local

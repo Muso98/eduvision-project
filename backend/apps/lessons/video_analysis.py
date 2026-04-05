@@ -445,6 +445,7 @@ class VideoAnalysisView(APIView):
         # 4. Save video file to model and start task
         try:
             lesson.video_file = video_file
+            lesson.is_processing = True
             lesson.save()
             
             # Start background task

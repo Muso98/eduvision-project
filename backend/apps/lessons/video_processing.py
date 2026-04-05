@@ -239,7 +239,8 @@ def process_video_file_task(video_path, lesson_id):
     if logs_to_create:
         ActivityLog.objects.bulk_create(logs_to_create, batch_size=400)
     
+    lesson.is_processing = False
     lesson.status = Lesson.Status.ENDED
     lesson.save()
     generate_lesson_report(lesson_id)
-    logger.info(f"Analysis complete for {lesson_id}")
+    logger.info(f"Analysis complete for lesson {lesson_id}")

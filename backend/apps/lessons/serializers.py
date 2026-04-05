@@ -13,9 +13,9 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'classroom', 'classroom_detail',
             'teacher', 'teacher_detail',
-            'start_time', 'end_time', 'status', 'created_at'
+            'start_time', 'end_time', 'status', 'is_processing', 'created_at'
         ]
-        read_only_fields = ['id', 'created_at', 'start_time', 'end_time', 'status']
+        read_only_fields = ['id', 'created_at', 'start_time', 'end_time', 'status', 'is_processing']
 
 
 class StartLessonSerializer(serializers.Serializer):

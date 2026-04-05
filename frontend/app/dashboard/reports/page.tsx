@@ -32,42 +32,71 @@ export default function ReportsList() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {reports.map((report) => (
-            <Link 
-              href={`/dashboard/reports/${report.lesson}`} 
-              key={report.id}
-              className="bg-white rounded-2xl p-6 flex flex-col border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1 transition-all duration-300 group"
-            >
-              <div className="flex items-center justify-between mb-5">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                  <FileText className="w-6 h-6" />
-                </div>
-                {/* Visual marker based on score */}
-                <div className={`px-3 py-1.5 rounded-full text-xs font-bold ${
-                  report.avg_engagement >= 80 ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 
-                  report.avg_engagement >= 50 ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-red-50 text-red-700 border border-red-100'
-                }`}>
-                  {report.avg_engagement}% <span className="font-medium opacity-80 pl-1">{t('avg_engagement') || 'Avg'}</span>
-                </div>
-              </div>
-              
-              <h4 className="text-xl font-bold text-slate-900 mb-2">Report #{report.lesson}</h4>
-              <p className="text-sm text-slate-500 mb-6 flex-1 line-clamp-2 leading-relaxed">
-                {report.summary || t('no_summary') || 'No summary available.'}
-              </p>
+          {reports.map((item) => {
+            const isProcessing = item.item_type === 'processing'
+            const id = isProcessing ? item.id : item.lesson
+            const title = isProcessing ? item.title : `Report #${item.lesson}`
+            const date = isProcessing ? item.created_at : item.created_at
 
-              <div className="flex items-center text-xs text-slate-500 pt-5 border-t border-slate-100 mt-auto">
-                <span className="flex items-center gap-1.5 font-medium bg-slate-50 border border-slate-200/60 px-2.5 py-1.5 rounded-lg">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                  {new Date(report.created_at).toLocaleDateString()}
-                </span>
-                <span className="flex items-center gap-1.5 font-medium ml-3 text-slate-400">
-                  <Clock className="w-3.5 h-3.5" />
-                  {new Date(report.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                </span>
+            return (
+              <div 
+                key={`${item.item_type}-${id}`}
+                className={`relative flex flex-col rounded-2xl p-6 border transition-all duration-300 group ${
+                  isProcessing 
+                    ? 'bg-slate-50 border-slate-200 cursor-default opacity-85' 
+                    : 'bg-white border-slate-200 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-5">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                    isProcessing 
+                      ? 'bg-amber-100 text-amber-600' 
+                      : 'bg-blue-50 text-blue-600 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white'
+                  }`}>
+                    {isProcessing ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileText className="w-6 h-6" />}
+                  </div>
+                  
+                  {!isProcessing && (
+                    <div className={`px-3 py-1.5 rounded-full text-xs font-bold ${
+                      item.avg_engagement >= 80 ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 
+                      item.avg_engagement >= 50 ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-red-50 text-red-700 border border-red-100'
+                    }`}>
+                      {item.avg_engagement}% <span className="font-medium opacity-80 pl-1">{t('avg_engagement') || 'Avg'}</span>
+                    </div>
+                  )}
+                  
+                  {isProcessing && (
+                    <div className="px-3 py-1.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100 animate-pulse">
+                      {t('analyzing') || 'Analyzing...'}
+                    </div>
+                  )}
+                </div>
+                
+                <h4 className="text-xl font-bold text-slate-900 mb-2 truncate">{title}</h4>
+                <p className="text-sm text-slate-500 mb-6 flex-1 line-clamp-2 leading-relaxed">
+                  {isProcessing 
+                    ? (t('analysis_in_progress') || 'Video is being processed using AI models. This may take up to 20 minutes.')
+                    : (item.summary || t('no_summary') || 'No summary available.')
+                  }
+                </p>
+
+                <div className="flex items-center text-xs text-slate-500 pt-5 border-t border-slate-100 mt-auto">
+                  <span className="flex items-center gap-1.5 font-medium bg-slate-50 border border-slate-200/60 px-2.5 py-1.5 rounded-lg">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                    {new Date(date).toLocaleDateString()}
+                  </span>
+                  {!isProcessing && (
+                    <Link 
+                      href={`/dashboard/reports/${id}`}
+                      className="ml-auto text-blue-600 font-bold hover:underline"
+                    >
+                      {t('view_details') || 'View Details'} →
+                    </Link>
+                  )}
+                </div>
               </div>
-            </Link>
-          ))}
+            )
+          })}
           
           {reports.length === 0 && (
             <div className="col-span-full py-20 text-center">

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { getLessons, getClassrooms, getReports, startLesson, stopLesson } from '@/lib/api'
-import { Play, Square, Video, Plus, Clock, Users, ChevronRight, Activity } from 'lucide-react'
+import { Play, Square, Video, Plus, Clock, Users, ChevronRight, Activity, Loader2 } from 'lucide-react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import ActivityCard from '@/components/ActivityCard'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -154,10 +154,17 @@ export default function DashboardHome() {
             {lessons.map(lesson => (
               <div key={lesson.id} className="glass-card flex flex-col p-6 group">
                 <div className="flex justify-between items-start mb-4">
-                  <span className={`badge-${lesson.status === 'active' ? 'active' : lesson.status === 'ended' ? 'ended' : 'passive'} flex items-center gap-1.5 shadow-sm`}>
-                    {lesson.status === 'active' && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
-                    {lesson.status.charAt(0).toUpperCase() + lesson.status.slice(1)}
-                  </span>
+                  {lesson.is_processing ? (
+                    <span className="bg-amber-50 text-amber-700 border border-amber-100 px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm animate-pulse">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      {t('analyzing') || 'Analyzing...'}
+                    </span>
+                  ) : (
+                    <span className={`badge-${lesson.status === 'active' ? 'active' : lesson.status === 'ended' ? 'ended' : 'passive'} flex items-center gap-1.5 shadow-sm`}>
+                      {lesson.status === 'active' && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
+                      {lesson.status.charAt(0).toUpperCase() + lesson.status.slice(1)}
+                    </span>
+                  )}
                   <span className="text-xs text-slate-400 flex items-center gap-1.5 font-semibold">
                     {new Date(lesson.created_at).toLocaleDateString()}
                   </span>

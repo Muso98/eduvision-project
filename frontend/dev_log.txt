@@ -95,3 +95,7 @@ reload
  GET /dashboard 200 in 1146ms
  тЬУ Compiled in 869ms (1874 modules)
  GET /dashboard 200 in 386ms
+ GET /dashboard 200 in 34ms
+ GET /login 200 in 30ms
+ тЧЛ Compiling /dashboard/live/[lessonId] ...
+ тЬУ Compiled /dashboard/live/[lessonId] in 946ms (1900 modules)
