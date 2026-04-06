@@ -58,6 +58,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
     command: celery -A eduvision worker -l info --concurrency=1
     volumes:
+      - ./backend/data:/app/data
       - media_files:/app/media
     depends_on:
       db:
