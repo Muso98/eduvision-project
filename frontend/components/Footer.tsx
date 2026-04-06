@@ -12,10 +12,11 @@ export default function Footer() {
     <footer className="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand Section */}
           <div className="col-span-1 md:col-span-1">
-            <div className="flex items-center gap-2 text-white text-xl font-bold mb-4">
-              <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-sm">EV</div>
+            <div className="flex items-center gap-2 text-white text-xl font-bold mb-4 group">
+              <div className="w-10 h-10 bg-blue-600 rounded-xl overflow-hidden shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                <img src="/logo.png" alt="EduVision" className="w-full h-full object-cover" />
+              </div>
               <span>EduVision</span>
             </div>
             <p className="text-sm leading-relaxed">
