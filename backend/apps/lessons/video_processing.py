@@ -187,13 +187,31 @@ def process_video_file_task(video_path, lesson_id):
     from apps.analytics.models import ActivityLog
     from apps.reports.tasks import generate_lesson_report
     
+    # Ensure logging to file for easier debugging
+    import logging
+    fh = logging.FileHandler('video_analysis.log')
+    fh.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+
     try:
         lesson = Lesson.objects.get(id=lesson_id)
-    except Lesson.DoesNotExist: return
+        # Ensure we track processing state
+        lesson.is_processing = True
+        lesson.save(update_fields=['is_processing'])
+    except Lesson.DoesNotExist: 
+        logger.error(f"Lesson {lesson_id} not found for background analysis.")
+        return
 
-    logger.info(f"Video analysis started: {video_path}")
+    logger.info(f"Video analysis started for lesson {lesson_id}: {video_path}")
     cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened(): return
+    if not cap.isOpened(): 
+        logger.error(f"VideoCapture failed to open {video_path}. Marking lesson as failed.")
+        lesson.is_processing = False
+        lesson.status = Lesson.Status.ENDED
+        lesson.save()
+        return
 
     detector_pkg = _load_detector()
     pose_pkg = get_pose_engagement_pkg()
@@ -205,6 +223,15 @@ def process_video_file_task(video_path, lesson_id):
     
     fps = cap.get(cv2.CAP_PROP_FPS) or 25
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    
+    if total_frames <= 0:
+        logger.error(f"Video has 0 frames: {video_path}. Marking lesson as failed.")
+        cap.release()
+        lesson.is_processing = False
+        lesson.status = Lesson.Status.ENDED
+        lesson.save()
+        return
+
     skip_frames = max(1, total_frames // 400) # Analyze ~400 points
     
     frame_idx = 0

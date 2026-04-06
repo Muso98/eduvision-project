@@ -19,6 +19,10 @@ def run_video_analysis(lesson_id):
         if not lesson.video_file:
             return
         
+        # Explicitly set processing state
+        lesson.is_processing = True
+        lesson.save(update_fields=['is_processing'])
+        
         video_path = lesson.video_file.path
         
         # Call the processing logic inside the worker
