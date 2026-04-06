@@ -23,7 +23,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2 text-white text-xl font-bold group">
             <div className="w-9 h-9 bg-blue-600 rounded-xl overflow-hidden shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <img src="/logo.png" alt="EV" className="w-full h-full object-cover" />
+              <img src="/logo.png" alt="EduVision — AI Classroom Analytics" className="w-full h-full object-cover" />
             </div>
             <span>EduVision</span>
           </div>
@@ -174,7 +174,7 @@ export default function AboutPage() {
               <div className="aspect-video bg-slate-800 rounded-2xl overflow-hidden border border-white/10 shadow-2xl relative">
                  <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-transparent" />
                  <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-                    <ShieldCheck size={64} className="text-blue-500 mb-4" />
+                    <img src="/logo.png" alt="EduVision Security" className="w-16 h-16 rounded-xl mb-4 shadow-lg shadow-blue-500/20" />
                     <h3 className="text-xl font-bold mb-2">{t('privacy_title')}</h3>
                     <p className="text-slate-400 text-sm">{t('privacy_desc')}</p>
                  </div>

@@ -11,6 +11,17 @@ export const metadata: Metadata = {
     icon: '/icon.png',
     apple: '/icon.png',
   },
+  verification: {
+    google: 'google7ff36e6ec85ffce7',
+  },
+  alternates: {
+    canonical: 'https://eduvision.com.uz',
+    languages: {
+      'uz-UZ': 'https://eduvision.com.uz?lang=uz',
+      'ru-RU': 'https://eduvision.com.uz?lang=ru',
+      'en-US': 'https://eduvision.com.uz?lang=en',
+    },
+  },
   openGraph: {
     title: 'EduVision — Classroom Analytics',
     description: 'Real-time AI-powered student engagement monitoring platform',
@@ -22,11 +33,13 @@ export const metadata: Metadata = {
 
 import { LanguageProvider } from '@/contexts/LanguageContext'
 import Footer from '@/components/Footer'
+import StructuredData from '@/components/StructuredData'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="min-h-screen bg-dark-900 text-slate-200 antialiased flex flex-col">
+        <StructuredData />
         <LanguageProvider>
           <main className="flex-grow">
             {children}
