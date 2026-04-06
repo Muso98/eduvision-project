@@ -156,4 +156,5 @@ export const en = {
   footer_terms: 'Terms of Service',
   footer_docs: 'Documentation',
   all_rights_reserved: 'All rights reserved.',
+  language: 'Language',
 };

@@ -157,4 +157,5 @@ export const uz = {
   footer_terms: 'Foydalanish shartlari',
   footer_docs: 'Hujjatlar',
   all_rights_reserved: 'Barcha huquqlar himoyalangan.',
+  language: 'Til',
 };

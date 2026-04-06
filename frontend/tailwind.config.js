@@ -19,6 +19,9 @@ module.exports = {
           500: '#3b82f6', /* Blue 500 */
         }
       },
+      screens: {
+        'xs': '480px',
+      },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-out',
         'fade-in-up': 'fadeInUp 0.4s ease-out',

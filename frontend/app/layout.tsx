@@ -2,8 +2,22 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'EduVision — Classroom Analytics',
-  description: 'Real-time AI-powered student engagement monitoring platform',
+  title: 'EduVision — AI Classroom Analytics Platform',
+  description: 'Enhance learning outcomes with real-time AI student engagement monitoring. Advanced analytics for modern classrooms.',
+  keywords: ['EduVision', 'Classroom Analytics', 'AI Education', 'Student Engagement', 'Learning Outcomes', 'Education Technology', 'Uzbekistan AI'],
+  authors: [{ name: 'EduVision Team' }],
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
+  openGraph: {
+    title: 'EduVision — Classroom Analytics',
+    description: 'Real-time AI-powered student engagement monitoring platform',
+    type: 'website',
+    locale: 'uz_UZ',
+    siteName: 'EduVision',
+  },
 }
 
 import { LanguageProvider } from '@/contexts/LanguageContext'

@@ -135,4 +135,5 @@ export const ru = {
   footer_terms: 'Условия использования',
   footer_docs: 'Документация',
   all_rights_reserved: 'Все права защищены.',
+  language: 'Язык',
 };

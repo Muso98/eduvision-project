@@ -251,7 +251,7 @@ export default function VideoUploadAnalysis({ lessonId }: { lessonId?: number })
           </div>
 
           {/* Key Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             <div className="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
               <div className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
                 <BarChart2 className="w-3.5 h-3.5" /> O'rtacha faollik

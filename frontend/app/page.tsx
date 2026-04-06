@@ -21,8 +21,10 @@ export default function AboutPage() {
       {/* Landing Header */}
       <header className="fixed top-0 w-full z-50 bg-dark-900/50 backdrop-blur-md border-b border-white/5">
         <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white text-xl font-bold">
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-sm">EV</div>
+          <div className="flex items-center gap-2 text-white text-xl font-bold group">
+            <div className="w-9 h-9 bg-blue-600 rounded-xl overflow-hidden shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <img src="/logo.png" alt="EV" className="w-full h-full object-cover" />
+            </div>
             <span>EduVision</span>
           </div>
           
