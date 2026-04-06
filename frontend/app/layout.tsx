@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     apple: '/icon.png',
   },
   verification: {
-    google: 'google7ff36e6ec85ffce7',
+    google: 'zhBmnyrfqw9EZ2TQUunkG-N1XJ2zrN',
   },
   alternates: {
     canonical: 'https://eduvision.com.uz',
